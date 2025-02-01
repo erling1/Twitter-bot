@@ -16,11 +16,21 @@ tag = doc.h2
 headlines = doc.find_all('h2', class_='headline')
 links = doc.find_all('a', itemprop='url')
 
-for link in doc.find_all('a'):
-    print(link.get('href'))
+links_list = []
 
-data = {}
-count = 1
+for link in links:
+    href = link.get('href')  # Use .get() to avoid KeyError
+    if href and 'https://www.vg.no/nyheter' in href:  # Ensure href is not None
+
+        headline = href[35:].split('?')
+
+        print(headline)
+
+        links_list.append(headline[0].replace("-", " "))
+          # Print only matching links
+
+for i in links_list:
+    print(i)
 
 
 """for headline in headlines:
