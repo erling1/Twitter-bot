@@ -1,43 +1,126 @@
 import requests
 from bs4 import BeautifulSoup
 
-url = 'https://www.vg.no/'
 
 
 
+class ScrapAndFilter:
 
-result = requests.get(url)
-doc = BeautifulSoup(result.text) 
+    def __init__(self, url : str = 'https://www.vg.no/'):
+        self.url = url
+
+        self.headlines = self.scrape(url)
+        self.norwegian_news_words = frozenset([
+    # Crime and Law Enforcement
+    "politiet",
+    "drapet",
+    "dømt",
+    "drap",
+    "siktede",
+    "mistenkte",
+    "fengslet",
+    "doemt",
+    "knivstikking",
+    "arrestert",
+    
+    # Politics and Government
+    "justisministeren",
+    "regjeringen",
+    "politiker",
+    "opposisjons",
+    "stortinget",
+    
+    # Political Figures
+    "erna solberg",
+    "støre",
+    "vedum",
+    "trump",
+    
+    # Action Words
+    "sier",
+    "mener",
+    "advarer",
+    "avsløres",
+    "hevder",
+    "raser",
+    "anker",
+    "henlegger",
+    
+    # Incident Related
+    "ulykken",
+    "skytingen",
+    "døde",
+    "drepte",
+    "skadede",
+    "hendelsen",
+    
+    # Location Identifiers
+    "norske",
+    "norge",
+    "svensk",
+    "israel",
+    "gaza",
+    
+    # Organizations
+    "nrk",
+    "vg",
+    "aftenposten",
+    "politiet",
+    "usaid",
+    
+    # Status Words
+    "saken",
+    "dommen",
+    "ordre",
+    "rapport"
+])
+    
+    def scrape(self,url):
 
 
+        result = requests.get(url)
+        doc = BeautifulSoup(result.text) 
 
-tag = doc.h2 
-  
-headlines = doc.find_all('h2', class_='headline')
-links = doc.find_all('a', itemprop='url')
+        links = doc.find_all('a', itemprop='url')
 
-links_list = []
+        links_list = []
 
-for link in links:
-    href = link.get('href')  # Use .get() to avoid KeyError
-    if href and 'https://www.vg.no/nyheter' in href:  # Ensure href is not None
+        for link in links:
+            href = link.get('href') 
+            if href and 'https://www.vg.no/nyheter' in href:  
 
-        headline = href[35:].split('?')
+                headline = href[35:].split('?')
 
-        print(headline)
+                
 
-        links_list.append(headline[0].replace("-", " "))
-          # Print only matching links
+                links_list.append(headline[0].replace("-", " "))
+                # Print only matching links
 
-for i in links_list:
-    print(i)
+        
+        return links_list
 
+    def filter_news(self ):
 
-"""for headline in headlines:
-    print('\n')
-    print(f'headline {count}', headline)
+        filter_words = self.norwegian_news_words
 
-    count +=1
+        news_headlines = []
+        
 
-    if count ==2:
-        break"""
+        for headline in self.headlines:
+
+            
+
+        
+
+            title_words = set(headline.lower().split())
+            if bool(title_words & filter_words):  # True if any word from title is in filter_words
+
+                news_headlines.append(headline)
+        
+
+        
+        return news_headlines
+    
+
+    
+    

@@ -22,7 +22,7 @@ def get_tweets(username):
         auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
  
         # Access to user's access key and access secret
-        auth.set_access_token(Acces_Token, ACCES_Secret)
+        auth.set_access_token(ACCESS_Token, ACCESS_Secret)
  
         # Calling api
         api = tweepy.API(auth)
